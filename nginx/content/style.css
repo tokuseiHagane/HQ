@@ -1,0 +1,116 @@
+html{
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(315deg, rgb(69, 120, 179) 18%,rgb(77, 192, 146) 100%, rgb(201, 94, 94) 47%) no-repeat;
+}
+body{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: none;
+    height: inherit;
+}
+
+a, h1, p{color: #faf4f4; transition: all 0.5s;}
+a, p{font-size: 18px;}
+a:hover{color: #fafafa; transition: all 0.5s;}
+ul{
+    list-style-type: disclosure-open;
+}
+
+
+.main_content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+.main_content div:first-child{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 20px;
+    background: rgba(6, 97, 133, 0.651);
+    border-radius: 25px;
+}
+.exile{display: flex; gap: 10px;}
+.main_content_block{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+}
+a{
+    font-size: 16px;
+    text-align: center;
+    line-height: 16px;
+    text-decoration: none;
+}
+.exile a{
+    color: rgb(158, 8, 138);
+    background: rgba(73, 72, 72, 0.308);
+    border-radius: 25px;
+}
+.exile{display: flex; gap: 10px;}
+.exile a{
+    width: 150px;
+    padding: 10px 15px 10px 15px;
+    background: rgb(12, 55, 75);
+    border-radius: 25px;
+    font-size: 16px;
+    text-align: center;
+    line-height: 16px;
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+    transition: all 0.5s cubic-bezier(1,-1.53,.52,1.53);
+}
+.exile a:hover{
+    transition: all 1s cubic-bezier(1,-1.53,.52,1.53);
+    transform: translate(0, -5px) scale(1.1);
+}
+button{
+    margin-top: 10px;
+    border: none;
+    color: rgb(158, 8, 138);
+    padding: 10px 15px 10px 15px;
+    background: rgb(75, 12, 72);
+    border-radius: 25px;
+    transition: all 0.5s cubic-bezier(1,-1.53,.52,1.53);
+}
+.but{
+    background: rgb(75, 12, 72);
+    border-radius: 25px;
+    color: aliceblue;
+}
+form div{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: rgba(73, 72, 72, 0.651);
+    border-radius: 25px;
+}
+.list_file{
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+    gap: 10px;
+    padding: 20px;
+    background: rgba(73, 72, 72, 0.651);
+    border-radius: 25px;
+}
+.list_element{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 25px;
+    padding: 10px;
+    background: rgba(102, 2, 85, 0.295);
+}
+.list_element a{
+    color: rgb(32, 1, 28);
+}
+
