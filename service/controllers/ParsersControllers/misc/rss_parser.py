@@ -17,7 +17,7 @@ async def rss_parser(httpx_client, source, rss_link, posted_q, n_test_chars=50,
             response = await httpx_client.get(rss_link, headers=random_user_agent_headers())
             response.raise_for_status()
         except Exception as e:
-            if not (logger is None):
+            if logger is not None:
                 logger.error(f'{source} rss error pass\n{e}')
 
             await asyncio.sleep(timeout*2 - random.uniform(0, 0.5))

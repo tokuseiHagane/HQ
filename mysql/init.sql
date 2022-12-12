@@ -1,139 +1,151 @@
-CREATE DATABASE IF NOT EXISTS appDB;
+CREATE DATABASE IF NOT EXISTS appdb;
 CREATE USER IF NOT EXISTS 'user'@'%' IDENTIFIED BY 'password';
-GRANT SELECT,UPDATE,INSERT ON appDB.* TO 'user'@'%';
+GRANT SELECT,UPDATE,INSERT ON appdb.* TO 'user'@'%';
 FLUSH PRIVILEGES;
 
-USE appDB;
+USE appdb;
 SET NAMES utf8;
 
 
 CREATE TABLE article
 (
-	id_article           INTEGER NOT NULL AUTO_INCREMENT,
-	title                TEXT NULL,
-	content              LONGTEXT NOT NULL,
+	id           INTEGER NOT NULL AUTO_INCREMENT,
+	title                TINYTEXT NULL,
+	content              TEXT NOT NULL,
 	time                 TIME NOT NULL,
 	id_source            INTEGER NOT NULL,
-	primary key (id_article)
+	primary key (id)
 );
 
 
 
 CREATE TABLE media
 (
-	id_media             INTEGER NOT NULL AUTO_INCREMENT,
+	id             INTEGER NOT NULL AUTO_INCREMENT,
 	media_link           VARCHAR(190) NOT NULL,
 	id_media_type        INTEGER NOT NULL,
-	primary key (id_media)
+	primary key (id)
 );
 
 
 
 CREATE TABLE media_sequence
 (
-	id_media_sequence    INTEGER NOT NULL AUTO_INCREMENT,
+	id    INTEGER NOT NULL AUTO_INCREMENT,
 	id_media             INTEGER NOT NULL,
 	id_article           INTEGER NOT NULL,
-	primary key (id_media_sequence)
+	primary key (id)
 );
 
 
 
 CREATE TABLE media_type
 (
-	id_media_type        INTEGER NOT NULL AUTO_INCREMENT,
+	id        INTEGER NOT NULL AUTO_INCREMENT,
 	type                 TINYTEXT NOT NULL,
-	primary key (id_media_type)
+	primary key (id)
 );
 
 
 
 CREATE TABLE publish_sequence
 (
-	id_sequence          INTEGER NOT NULL AUTO_INCREMENT,
+	id          INTEGER NOT NULL AUTO_INCREMENT,
 	date                 DATE NOT NULL,
 	id_article           INTEGER NOT NULL,
-	primary key (id_sequence)
+	primary key (id)
 );
 
 
 
 CREATE TABLE source_tag
 (
-	id_source_tag       INTEGER NOT NULL AUTO_INCREMENT,
+	id       INTEGER NOT NULL AUTO_INCREMENT,
 	type                 TINYTEXT NOT NULL,
-	primary key (id_source_tag)
+	primary key (id)
 );
 
 
 
 CREATE TABLE source
 (
-	id_source            INTEGER NOT NULL AUTO_INCREMENT,
+	id            INTEGER NOT NULL AUTO_INCREMENT,
 	url                  VARCHAR(190) NOT NULL,
-	name                 TEXT NOT NULL,
+	name                 TINYTEXT NOT NULL,
 	id_url_type          INTEGER NOT NULL,
-	primary key (id_source)
+	primary key (id)
 );
 
 
 
 CREATE TABLE source_tags
 (
-	id_tags INTEGER NOT NULL AUTO_INCREMENT,
+	id INTEGER NOT NULL AUTO_INCREMENT,
 	id_source          	INTEGER NOT NULL,
 	id_source_tag         INTEGER NOT NULL,
-	primary key (id_tags)
+	primary key (id)
 );
 
 
 
 CREATE TABLE url_type
 (
-	id_url_type          INTEGER NOT NULL AUTO_INCREMENT,
+	id          INTEGER NOT NULL AUTO_INCREMENT,
 	type                 TINYTEXT NOT NULL,
-	primary key (id_url_type)
+	primary key (id)
 );
 
+CREATE TABLE role
+(
+	id          INTEGER NOT NULL AUTO_INCREMENT,
+	name                 varchar(80) NOT NULL,
+	primary key (id)
+);
 
+CREATE TABLE user
+(
+	id          INTEGER NOT NULL AUTO_INCREMENT,
+	name                 varchar(80) NOT NULL,
+	primary key (id)
+);
 
 ALTER TABLE article
-ADD FOREIGN KEY SOURCE_KEY (id_source) REFERENCES source (id_source);
+ADD FOREIGN KEY SOURCE_KEY (id_source) REFERENCES source (id);
 
 
 
 ALTER TABLE media
-ADD FOREIGN KEY MEDIA_TYPE_KEY (id_media_type) REFERENCES media_type (id_media_type);
+ADD FOREIGN KEY MEDIA_TYPE_KEY (id_media_type) REFERENCES media_type (id);
 
 
 
 ALTER TABLE media_sequence
-ADD FOREIGN KEY MEDIA_KEY (id_media) REFERENCES media (id_media);
+ADD FOREIGN KEY MEDIA_KEY (id_media) REFERENCES media (id);
 
 
 
 ALTER TABLE media_sequence
-ADD FOREIGN KEY ARTICLE_KEY (id_article) REFERENCES article (id_article);
+ADD FOREIGN KEY ARTICLE_KEY (id_article) REFERENCES article (id);
 
 
 
 ALTER TABLE source_tags
-ADD FOREIGN KEY TAG_KEY (id_source_tag) REFERENCES source_tag (id_source_tag);
+ADD FOREIGN KEY TAG_KEY (id_source_tag) REFERENCES source_tag (id);
 
 
 
 ALTER TABLE source_tags
-ADD FOREIGN KEY SOURCE_KEY (id_source) REFERENCES source (id_source);
+ADD FOREIGN KEY SOURCE_KEY (id_source) REFERENCES source (id);
 
 
 
 ALTER TABLE publish_sequence
-ADD FOREIGN KEY ARTICLE_KEY (id_article) REFERENCES article (id_article);
+ADD FOREIGN KEY ARTICLE_KEY (id_article) REFERENCES article (id);
 
 
 
 ALTER TABLE source
-ADD FOREIGN KEY URL_KEY (id_url_type) REFERENCES url_type (id_url_type);
+ADD FOREIGN KEY URL_KEY (id_url_type) REFERENCES url_type (id);
 
 
 -- INSERT TYPES
@@ -236,6 +248,8 @@ INSERT INTO publish_sequence (date, id_article) VALUES
 INSERT INTO media_sequence (id_article, id_media) VALUES
 (1, 1),(1, 2),(3, 3),(3, 4),(4, 5),(5, 6),(5, 7);
 
+-- delete триггеры для полседовательностей
+-- удаление статьи из publish_sequence (удаляет статью из общего хранилища)
 delimiter //
 create trigger delete_article before delete on publish_sequence for each row
 begin
@@ -244,6 +258,7 @@ end
 //
 delimiter ;
 
+-- удаление вложения из media_sequence (удаляет отвязвнное вложение из общего хранилища)
 delimiter //
 create trigger delete_media before delete on media_sequence for each row
 begin
@@ -252,6 +267,7 @@ end
 //
 delimiter ;
 
+-- удаление тэга из source_tag (отвязывает тэг от ресурса)
 delimiter //
 create trigger delete_source_tag before delete on source_tag for each row
 begin
@@ -259,3 +275,39 @@ delete from source_tags where source_tags.id_source_tag=old.id_source_tag;
 end
 //
 delimiter ;
+
+-- процедуры на получение
+-- процедура для получения статей по дате
+delimiter //
+create definer = 'root'@'localhost' procedure appDB.getArticlesByDate (in curDate date)
+begin
+   select a.id_article, p.date, a.time, a.title, a.content, s.name
+   from appDB.publish_sequence as p left join appDB.article as a
+   on p.date = curDate join appDB.source as s
+   on a.id_source = s.id_source;
+end
+//
+delimiter ;
+
+-- процедура для получения вложений по статье
+delimiter //
+create definer = 'root'@'localhost' procedure appDB.getMediaByArticle (in ID int)
+begin
+   select a.id_article, m.media_link, t.type
+   from appDB.article as a right join appDB.media_sequence as s
+   on a.id_article = ID and s.id_article = ID join appDB.media_type as t
+   on t.id_media_type = s.id_media_type;
+end
+//
+delimiter ;
+
+
+-- delimiter //
+-- CREATE DEFINER=`root`@`localhost` FUNCTION Article.insertArticle() RETURNS boolean
+-- DETERMINISTIC
+-- BEGIN
+-- 	insert 
+-- 	RETURN (SELECT sum(PriceMonth) as revenue from aboniment join aboniment_type on aboniment.id_sub_type = aboniment_type.id_sub_type);
+-- END
+-- //
+-- delimiter ;
