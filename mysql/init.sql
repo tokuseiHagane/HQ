@@ -9,143 +9,130 @@ SET NAMES utf8;
 
 CREATE TABLE article
 (
-	id           INTEGER NOT NULL AUTO_INCREMENT,
+	id_article           INTEGER NOT NULL AUTO_INCREMENT,
 	title                TINYTEXT NULL,
 	content              TEXT NOT NULL,
 	time                 TIME NOT NULL,
 	id_source            INTEGER NOT NULL,
-	primary key (id)
+	primary key (id_article)
 );
 
 
 
 CREATE TABLE media
 (
-	id             INTEGER NOT NULL AUTO_INCREMENT,
+	id_media             INTEGER NOT NULL AUTO_INCREMENT,
 	media_link           VARCHAR(190) NOT NULL,
 	id_media_type        INTEGER NOT NULL,
-	primary key (id)
+	primary key (id_media)
 );
 
 
 
 CREATE TABLE media_sequence
 (
-	id    INTEGER NOT NULL AUTO_INCREMENT,
+	id_media_sequence    INTEGER NOT NULL AUTO_INCREMENT,
 	id_media             INTEGER NOT NULL,
 	id_article           INTEGER NOT NULL,
-	primary key (id)
+	primary key (id_media_sequence)
 );
 
 
 
 CREATE TABLE media_type
 (
-	id        INTEGER NOT NULL AUTO_INCREMENT,
+	id_media_type        INTEGER NOT NULL AUTO_INCREMENT,
 	type                 TINYTEXT NOT NULL,
-	primary key (id)
+	primary key (id_media_type)
 );
 
 
 
 CREATE TABLE publish_sequence
 (
-	id          INTEGER NOT NULL AUTO_INCREMENT,
+	id_publish_sequence          INTEGER NOT NULL AUTO_INCREMENT,
 	date                 DATE NOT NULL,
 	id_article           INTEGER NOT NULL,
-	primary key (id)
+	primary key (id_publish_sequence)
 );
 
 
 
 CREATE TABLE source_tag
 (
-	id       INTEGER NOT NULL AUTO_INCREMENT,
+	id_source_tag       INTEGER NOT NULL AUTO_INCREMENT,
 	type                 TINYTEXT NOT NULL,
-	primary key (id)
+	primary key (id_source_tag)
 );
 
 
 
 CREATE TABLE source
 (
-	id            INTEGER NOT NULL AUTO_INCREMENT,
+	id_source            INTEGER NOT NULL AUTO_INCREMENT,
 	url                  VARCHAR(190) NOT NULL,
 	name                 TINYTEXT NOT NULL,
 	id_url_type          INTEGER NOT NULL,
-	primary key (id)
+	primary key (id_source)
 );
 
 
 
 CREATE TABLE source_tags
 (
-	id INTEGER NOT NULL AUTO_INCREMENT,
+	id_source_tags INTEGER NOT NULL AUTO_INCREMENT,
 	id_source          	INTEGER NOT NULL,
 	id_source_tag         INTEGER NOT NULL,
-	primary key (id)
+	primary key (id_source_tags)
 );
 
 
 
 CREATE TABLE url_type
 (
-	id          INTEGER NOT NULL AUTO_INCREMENT,
+	id_url_type          INTEGER NOT NULL AUTO_INCREMENT,
 	type                 TINYTEXT NOT NULL,
-	primary key (id)
+	primary key (id_url_type)
 );
 
-CREATE TABLE role
-(
-	id          INTEGER NOT NULL AUTO_INCREMENT,
-	name                 varchar(80) NOT NULL,
-	primary key (id)
-);
-
-CREATE TABLE user
-(
-	id          INTEGER NOT NULL AUTO_INCREMENT,
-	name                 varchar(80) NOT NULL,
-	primary key (id)
-);
 
 ALTER TABLE article
-ADD FOREIGN KEY SOURCE_KEY (id_source) REFERENCES source (id);
+ADD FOREIGN KEY SOURCE_KEY (id_source) REFERENCES source (id_source);
 
 
 
 ALTER TABLE media
-ADD FOREIGN KEY MEDIA_TYPE_KEY (id_media_type) REFERENCES media_type (id);
+ADD FOREIGN KEY MEDIA_TYPE_KEY (id_media_type) REFERENCES media_type (id_media_type);
 
 
 
 ALTER TABLE media_sequence
-ADD FOREIGN KEY MEDIA_KEY (id_media) REFERENCES media (id);
+ADD FOREIGN KEY MEDIA_KEY (id_media) REFERENCES media (id_media);
 
 
 
 ALTER TABLE media_sequence
-ADD FOREIGN KEY ARTICLE_KEY (id_article) REFERENCES article (id);
+ADD FOREIGN KEY ARTICLE_KEY (id_article) REFERENCES article (id_article);
 
 
 
 ALTER TABLE source_tags
-ADD FOREIGN KEY TAG_KEY (id_source_tag) REFERENCES source_tag (id);
+ADD FOREIGN KEY TAG_KEY (id_source_tag) REFERENCES source_tag (id_source_tag);
 
 
 
 ALTER TABLE source_tags
-ADD FOREIGN KEY SOURCE_KEY (id_source) REFERENCES source (id);
+ADD FOREIGN KEY SOURCE_KEY (id_source) REFERENCES source (id_source);
 
 
 
 ALTER TABLE publish_sequence
-ADD FOREIGN KEY ARTICLE_KEY (id_article) REFERENCES article (id);
+ADD FOREIGN KEY ARTICLE_KEY (id_article) REFERENCES article (id_article);
 
 
 
 ALTER TABLE source
-ADD FOREIGN KEY URL_KEY (id_url_type) REFERENCES url_type (id);
+ADD FOREIGN KEY URL_KEY (id_url_type) REFERENCES url_type (id_url_type);
 
 
 -- INSERT TYPES
@@ -181,11 +168,11 @@ INSERT INTO media (media_link, id_media_type) VALUES
 ("https://i.imgur.com/eAoBzS5.jpeg", 1);
 
 INSERT INTO source (url, name, id_url_type) VALUES
-("Интерфакс", "https://t.me/interfaxonline", 3),
-("ПРАЙМ", "https://t.me/prime1", 3),
-("Opennet", "https://www.opennet.ru/opennews/opennews_full.rss", 1),
-("РБК", "https://.rbc.ru/", 1),
-("РИА Новости", "https://ria.ru/", 1);
+("https://t.me/interfaxonline", "Интерфакс", 3),
+("https://t.me/prime1", "ПРАЙМ", 3),
+("https://www.opennet.ru/opennews/opennews_full.rss", "Opennet", 1),
+("https://.rbc.ru/", "РБК", 1),
+("https://ria.ru/", "РИА Новости", 1);
 
 INSERT INTO source_tags (id_source, id_source_tag) VALUES
 (4, 3),(4, 4),(4, 5),(4, 6),(4, 7),
@@ -237,17 +224,14 @@ INSERT INTO article (title, content, time, id_source) VALUES
 По его словам, 150 тыс. мобилизованных, то есть половина из общего количества попавших под частичную мобилизацию, не находятся в войсковой группировке в зоне спецоперации. «Они до сих пор находятся на полигонах и в учебных центрах Министерства обороны, где проходят дополнительную подготовку. Это так называемый боевой резерв. В этих условиях разговоры о каких-то дополнительных мобилизационных мероприятиях просто не имеют смысла», — заключил президент.
 Ранее, 4 ноября, Путин говорил о том, что в ходе частичной мобилизации Минобороны призвало из запаса достаточное количество военнослужащих. По оценке президента, таковых насчитывалось 318 тыс. человек, включая добровольцев. К началу месяца в зону боевых действий направили около 50 тыс. человек. В конце ноября глава государства провел встречу с матерями участников спецоперации, и на слова одной из женщин, которая сказала, что скоро ее младшему сыну исполнится 18 лет, и он, как и двое других ее сыновей, будет призван и тоже «пойдет воевать», Путин ответил: «Не надо, не надо, хватит».", 
 "17:26:00", 4);
-
 INSERT INTO publish_sequence (date, id_article) VALUES
 ("2022-12-07", 1),
 ("2022-12-06", 2),
 ("2022-12-05", 3),
 ("2022-04-15", 4),
 ("2022-12-07", 5);
-
 INSERT INTO media_sequence (id_article, id_media) VALUES
 (1, 1),(1, 2),(3, 3),(3, 4),(4, 5),(5, 6),(5, 7);
-
 -- delete триггеры для полседовательностей
 -- удаление статьи из publish_sequence (удаляет статью из общего хранилища)
 delimiter //
@@ -257,7 +241,6 @@ delete from article where article.id_article=old.id_article;
 end
 //
 delimiter ;
-
 -- удаление вложения из media_sequence (удаляет отвязвнное вложение из общего хранилища)
 delimiter //
 create trigger delete_media before delete on media_sequence for each row
@@ -266,7 +249,6 @@ delete from media where media.id_media=old.id_media;
 end
 //
 delimiter ;
-
 -- удаление тэга из source_tag (отвязывает тэг от ресурса)
 delimiter //
 create trigger delete_source_tag before delete on source_tag for each row
@@ -279,11 +261,11 @@ delimiter ;
 -- процедуры на получение
 -- процедура для получения статей по дате
 delimiter //
-create definer = 'root'@'localhost' procedure appDB.getArticlesByDate (in curDate date)
+create definer = 'root'@'localhost' procedure appdb.getArticlesByDate (in curDate date)
 begin
    select a.id_article, p.date, a.time, a.title, a.content, s.name
-   from appDB.publish_sequence as p left join appDB.article as a
-   on p.date = curDate join appDB.source as s
+   from appdb.publish_sequence as p left join appdb.article as a
+   on p.date = curDate join appdb.source as s
    on a.id_source = s.id_source;
 end
 //
@@ -291,23 +273,107 @@ delimiter ;
 
 -- процедура для получения вложений по статье
 delimiter //
-create definer = 'root'@'localhost' procedure appDB.getMediaByArticle (in ID int)
+create definer = 'root'@'localhost' procedure appdb.getMediaByArticle (in ID int)
 begin
    select a.id_article, m.media_link, t.type
-   from appDB.article as a right join appDB.media_sequence as s
-   on a.id_article = ID and s.id_article = ID join appDB.media_type as t
+   from appdb.article as a right join appdb.media_sequence as s
+   on a.id_article = ID and s.id_article = ID join appdb.media_type as t
    on t.id_media_type = s.id_media_type;
 end
 //
 delimiter ;
 
+-- процедура для добавления новой статьи
+-- date                 DATE NOT NULL (для publish),
+-- id_article           INTEGER NOT NULL (для publish),
+-- title                TINYTEXT NULL,
+-- content              TEXT NOT NULL,
+-- time                 TIME NOT NULL,
+-- name            INTEGER NOT NULL,
+
+delimiter //
+create definer = 'root'@'localhost' procedure appdb.insertNewArticle
+(in title tinytext, in content text, in article_time time, in article_date date, in source_name TINYTEXT)
+begin
+	SET @source_id = (select s.id_source from source as s where s.name = source_name);
+	insert into article (title, content, time, id_source)
+    values (title, content, article_time, (select @source_id));
+    insert into publish_sequence (date, id_article) values (article_date, (SELECT LAST_INSERT_ID()));
+end
+//
+delimiter ;
 
 -- delimiter //
--- CREATE DEFINER=`root`@`localhost` FUNCTION Article.insertArticle() RETURNS boolean
--- DETERMINISTIC
+-- CREATE DEFINER=`root`@`localhost` FUNCTION Article.insertArticle()
 -- BEGIN
 -- 	insert 
--- 	RETURN (SELECT sum(PriceMonth) as revenue from aboniment join aboniment_type on aboniment.id_sub_type = aboniment_type.id_sub_type);
+-- 	SELECT sum(PriceMonth) as revenue from aboniment join aboniment_type on aboniment.id_sub_type = aboniment_type.id_sub_type;
 -- END
 -- //
 -- delimiter ;
+
+
+-- Запрос 1. Операция проекции
+
+select a.id_article, a.title, a.time, a.id_source from article as a;
+
+-- Запрос 2. Операция селекции
+
+select a.id_article, a.title, a.time, a.id_source from article as a where a.id_source > 3;
+
+-- Запрос 3. Операции соединения
+
+select a.id_article, a.title, a.time, s.name from article as a, source as s
+where a.id_source = s.id_source;
+
+-- Запрос 4. Операция объединения
+
+select m.id_media, m.media_link, t.type from media as m join media_type as t 
+on m.id_media_type = t.id_media_type;
+
+-- Запрос 5. Операция пересечения
+
+select a.id_article, a.title, s.date from article as a join publish_sequence as s 
+on a.id_article=s.id_article
+where a.id_article=3 
+and exists (select * from publish_sequence as s1
+where s1.id_article=s.id_article and s1.id_article=3);
+
+-- Запрос 6. Операция разности
+
+select a.id_article, a.title, s.date from article as a join publish_sequence as s
+on a.id_article=s.id_article
+where not exists (select * from publish_sequence as s1
+where s1.id_article=s.id_article and s1.id_article=3);
+
+
+-- Запрос 7. Операция группировки
+
+SELECT t.type, COUNT(m.id_media_type) AS count FROM media as m right join media_type as t
+on m.id_media_type=t.id_media_type
+GROUP BY t.type;
+
+-- Запрос 8. Операция сортировки
+
+select s.id_article, a.title, m.media_link, t.type from media as m join media_type as t 
+on m.id_media_type = t.id_media_type join media_sequence as s
+on s.id_media = m.id_media join article as a
+on a.id_article = s.id_article order by s.id_article asc;
+
+-- Запрос 9. Операция деления
+
+-- select a.id_article, a.title, s.date from article as a join publish_sequence as s
+-- on a.id_article=s.id_article
+-- where not exists (select * from publish_sequence as s1
+-- where s1.id_article=s.id_article and s1.id_article=3);
+
+-- SELECT FIOTeacher FROM Teachers WHERE idTeacher IN 
+-- (SELECT DISTINCT s0.idTeacher FROM Sessions AS s0
+-- WHERE NumSemestr=1 AND
+-- NOT EXISTS (SELECT DISTINCT s1.idTeacher, s2.NumGroup 
+-- FROM Sessions AS s1, Sessions AS s2
+-- WHERE s1.NumSemestr=1 AND s2.NumSemestr=1 
+-- AND NOT EXISTS (SELECT * FROM Sessions
+-- AS s3 WHERE s3.idTeacher=s1.idTeacher AND 
+-- s3.NumGroup=s2.NumGroup)
+-- AND s1.idTeacher=s0.idTeacher));
